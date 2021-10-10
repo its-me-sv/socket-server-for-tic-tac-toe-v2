@@ -7,7 +7,8 @@ const origins = [
     "http://localhost:3000/Tic-Tac-Toe-v2",
     "http://192.168.29.97:3000",
     "http://localhost:3000",
-    "https://its-me-sv.github.io/Tic-Tac-Toe-v2/"
+    "https://its-me-sv.github.io/Tic-Tac-Toe-v2/",
+    "https://its-me-sv.github.io"
 ];
 const io = new Server(httpServer, {
     cors: {
