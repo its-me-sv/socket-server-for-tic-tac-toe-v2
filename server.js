@@ -19,6 +19,7 @@ const io = new Server(httpServer, {
 io.on("connection", socket => {
     console.log(`${socket.id} Connected`);
     socket.on("disconnect", () => {
+        socket.broadcast.emit("playerLeft");
         console.log(`${socket.id} Disconnected`);
     });
     socket.on("joinRoom", roomId => {
@@ -36,8 +37,10 @@ io.on("connection", socket => {
         socket.join(roomId);
         if (clients.length == 0)
             socket.emit("first", socket.id);
-        else
+        else {
             socket.emit("second", socket.id);
+            socket.broadcast.to(roomId).emit("newPlayer", roomId);
+        }
     });
     socket.on("nameChanged", ({roomId, name}) => {
         socket.broadcast.to(roomId).emit("nameChanged", name);
@@ -47,6 +50,12 @@ io.on("connection", socket => {
     });
     socket.on("gameResult", ({ result, roomId }) => {
         socket.broadcast.to(roomId).emit("gameResult", {result});
+    });
+    socket.on("newPlayer", ({ playerData, roomId}) => {
+        socket.broadcast.to(roomId).emit("updateState", {...playerData});
+    });
+    socket.on("playerLeft", () => {
+        socket.broadcast.emit("playerLeft");
     });
 });
 
